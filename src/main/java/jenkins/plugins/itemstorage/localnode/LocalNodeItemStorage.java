@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package jenkins.plugins.itemstorage.local;
+package jenkins.plugins.itemstorage.localnode;
 
 import hudson.Extension;
 import hudson.FilePath;
@@ -35,18 +35,19 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import javax.annotation.Nonnull;
 
 /**
- * Implementation of Item Storage that stores data on the Jenkins master within the existing job folder.
+ * Implementation of Item Storage that stores data on the local node within the job folder.
+ * If the job runs on master it will be inside the existing job folder, on a slave a job folder will be created.
  *
- * @author Peter Hayes
+ * @author Daniel Beland
  */
-public class LocalItemStorage extends ItemStorage<LocalObjectPath> {
+public class LocalNodeItemStorage extends ItemStorage<LocalNodeObjectPath> {
 
     @DataBoundConstructor
-    public LocalItemStorage() {}
+    public LocalNodeItemStorage() {}
 
     @Override
-    public LocalObjectPath getObjectPath(Item item, FilePath workspace, String path) {
-        return new LocalObjectPath(new FilePath(item.getRootDir()).child(path));
+    public LocalNodeObjectPath getObjectPath(Item item, FilePath workspace, String path) {
+        return new LocalNodeObjectPath(item, workspace, path);
     }
 
     @Extension
@@ -54,7 +55,7 @@ public class LocalItemStorage extends ItemStorage<LocalObjectPath> {
         @Nonnull
         @Override
         public String getDisplayName() {
-            return Messages.LocalItemStorage_DisplayName();
+            return Messages.LocalNodeItemStorage_DisplayName();
         }
 
         @Override

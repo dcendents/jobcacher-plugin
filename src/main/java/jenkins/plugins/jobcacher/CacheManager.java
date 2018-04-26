@@ -25,12 +25,12 @@ public class CacheManager {
     // Could potential grow indefinitely as jobs are created and destroyed
     private static Map<String, Object> locks = new HashMap<>();
 
-    public static ObjectPath getCachePath(ItemStorage storage, Job<?, ?> job) {
-        return storage.getObjectPath(job, "cache");
+    public static ObjectPath getCachePath(ItemStorage storage, Job<?, ?> job, FilePath workspace) {
+        return storage.getObjectPath(job, workspace, "cache");
     }
 
-    public static ObjectPath getCachePath(ItemStorage storage, Run<?, ?> run) {
-        return getCachePath(storage, run.getParent());
+    public static ObjectPath getCachePath(ItemStorage storage, Run<?, ?> run, FilePath workspace) {
+        return getCachePath(storage, run.getParent(), workspace);
     }
 
     private static Object getLock(Job j) {
@@ -47,7 +47,7 @@ public class CacheManager {
      * Internal method only
      */
     public static List<Cache.Saver> cache(ItemStorage storage, Run run, FilePath workspace, Launcher launcher, TaskListener listener, EnvVars initialEnvironment, List<Cache> caches) throws IOException, InterruptedException {
-        ObjectPath cachePath = getCachePath(storage, run);
+        ObjectPath cachePath = getCachePath(storage, run, workspace);
 
         LOG.fine("Preparing cache for build " + run);
 
@@ -65,7 +65,7 @@ public class CacheManager {
      * Internal method only
      */
     public static void save(ItemStorage storage, Run run, FilePath workspace, Launcher launcher, TaskListener listener, long maxCacheSize, List<Cache> caches, List<Cache.Saver> cacheSavers) throws IOException, InterruptedException {
-        ObjectPath cachePath = getCachePath(storage, run);
+        ObjectPath cachePath = getCachePath(storage, run, workspace);
 
         // First calculate size of cache to check if it should just be deleted
         long totalSize = 0L;

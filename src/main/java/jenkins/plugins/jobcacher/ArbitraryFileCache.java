@@ -28,6 +28,7 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -135,7 +136,12 @@ public class ArbitraryFileCache extends Cache {
 
     public HttpResponse doDynamic(StaplerRequest req, StaplerResponse rsp, @AncestorInPath Job job) throws IOException, ServletException, InterruptedException {
 
-        ObjectPath cache = CacheManager.getCachePath(GlobalItemStorage.get().getStorage(), job).child(deriveCachePath(path));
+    	FilePath workspace = null;
+    	if (job instanceof AbstractProject) {
+    		workspace = ((AbstractProject) job).getSomeWorkspace();
+    	}
+
+        ObjectPath cache = CacheManager.getCachePath(GlobalItemStorage.get().getStorage(), job, workspace).child(deriveCachePath(path));
 
         if (!cache.exists()) {
             req.getView(this,"noCache.jelly").forward(req,rsp);

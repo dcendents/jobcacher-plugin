@@ -31,6 +31,7 @@ import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.Item;
 import hudson.model.listeners.ItemListener;
 import hudson.security.ACL;
@@ -80,7 +81,7 @@ public class S3ItemStorage extends ItemStorage<S3ObjectPath> {
     }
 
     @Override
-    public S3ObjectPath getObjectPath(Item item, String path) {
+    public S3ObjectPath getObjectPath(Item item, FilePath workspace, String path) {
         S3Profile profile = new S3Profile(lookupCredentials(), 5, 5L);
 
         return new S3ObjectPath(profile, bucketName, region, item.getFullName(), path);

@@ -25,6 +25,7 @@
 package jenkins.plugins.itemstorage;
 
 import hudson.ExtensionPoint;
+import hudson.FilePath;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Item;
 
@@ -43,8 +44,9 @@ public abstract class ItemStorage<T extends ObjectPath> extends AbstractDescriba
      * Given an item and path, return an ObjectPath implementation for it
      *
      * @param item The item to associate the path with
+     * @param workspace The current build workspace
      * @param path The path scoped by the item.
      * @return The ObjectPath to act upon that path
      */
-    public abstract T getObjectPath(Item item, String path);
+    public abstract T getObjectPath(Item item, FilePath workspace, String path);
 }
